@@ -1,0 +1,95 @@
+(function( $ ) {
+    'use strict';
+
+        $(document).ready(function(){
+               $('.search-bar').css('visibility', 'visible');
+        });
+
+        function setOverflowCss(searchFormId, visibility)
+        {
+            jQuery('section#'+searchFormId).parent().css('overflow', visibility);
+            jQuery('section#'+searchFormId).parent().parent().css('overflow', visibility);
+            jQuery('section#'+searchFormId).parent().parent().parent().css('overflow', visibility);
+            jQuery('section#'+searchFormId).parent().parent().parent().parent().css('overflow', visibility);
+        }
+
+        /*------------------------------------------------------
+        | insert localized placeholder
+        ------------------------------------------------------*/
+
+        document.onclick = function(event) {
+
+            event = event || window.event; // IE specials
+
+            var target = event.target || event.srcElement; // IE specials
+
+
+            /*------------------------------------------------------
+            | initial filter open click
+            ------------------------------------------------------*/
+
+            if(target.classList.contains('media-filter-label')){
+
+                var searchFormId = target.parentNode.dataset.formId;
+
+                setOverflowCss(searchFormId, 'visible');
+
+                jQuery('section#'+searchFormId+' .search-bar__istock-media-filter').addClass('open');
+
+
+            } else if(target.parentNode.classList.contains('media-filter-label')){
+
+                var parent = target.parentNode;
+
+                var searchFormId = parent.parentNode.dataset.formId;
+
+                setOverflowCss(searchFormId, 'visible');
+
+                jQuery(target.parentNode.parentNode).addClass('open');
+
+            /*------------------------------------------------------
+            | when a filter is selected
+            ------------------------------------------------------*/
+
+            } else if(target.parentNode.classList.contains('istock-search-bar')){
+
+                var searchFormId = target.parentNode.dataset.formId; 
+
+                istockSearchObj[searchFormId].selectedPath   = target.parentNode.dataset.path;
+
+                istockSearchObj[searchFormId].selectedFilter = target.parentNode.dataset.value;
+
+                //Update filter label
+                istockSearchObj[searchFormId].filterLabel.attr('data-type-selected', target.parentNode.dataset.value);
+
+                //Update placeholder copy
+                jQuery('section#'+searchFormId+' .istock-search-phrase').attr('placeholder', istockSearchObj.placeholders[target.parentNode.dataset.value]);
+
+                // Close filter select dropdown
+                jQuery(istockSearchObj[searchFormId].filterLabel).removeClass('open');
+                
+                setOverflowCss(searchFormId, 'hidden');
+
+
+            /*------------------------------------------------------
+            | close filter list on off click
+            ------------------------------------------------------*/
+
+            } else {
+                
+                jQuery('.search-bar__istock-media-filter').each(function(idx, elm){
+
+                    if( jQuery(elm).hasClass('open') ){
+                        jQuery(elm).removeClass('open');
+                    }
+                });
+
+            }
+        };
+              
+jQuery("section[class='search-bar__istock-media-filter open']").click(function() {
+jQuery("section[class='search-bar__istock-media-filter open']").attr('class', "section[class='search-bar__istock-media-filter']");
+});
+    
+
+})( jQuery );
